@@ -27,7 +27,12 @@ class Bot():
         self.check_interval = 30
         self.telegram_bot_token = telegram_bot_token
         self.telegram_chat_id = telegram_chat_id
+
     def check(self):
+        """
+        check runs a single check operation on the page. Returns true if enough seats are available on the requested connection
+        """
+
         self.driver.get(f"https://shop.regiojet.sk/?departureDate={self.date}&fromLocationId={self.from_id}&fromLocationType={self.from_type}&toLocationId={self.to_id}&toLocationType={self.to_type}")
 
         time.sleep(1)
@@ -43,6 +48,10 @@ class Bot():
         return free_seats >= self.required_seats
 
     def loop_check(self):
+        """
+        loop_check runs .check() in a loop every {check_interval} seconds and returns when seats are available whilst notifying the telegram chat
+        """
+
         while True:
             try:
                 res = self.check()
@@ -90,4 +99,4 @@ def main(from_name, to_name, date, required_seats):
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    main()
+    main()   # pylint: disable=E1120
